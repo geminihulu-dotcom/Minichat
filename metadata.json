@@ -1,0 +1,5 @@
+{
+  "name": "MiniChat",
+  "description": "A WhatsApp-like messaging app for friends to chat and share media with each other, featuring a simple and elegant design.",
+  "requestFramePermissions": []
+}
