@@ -16,20 +16,11 @@ const NewChatScreen: React.FC<NewChatScreenProps> = ({ currentUser, onChatStarte
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // 1. Get all chats the current user is in
-      const chatsQuery = query(collection(db, 'chats'), where('members', 'array-contains', currentUser.id));
-      const chatsSnapshot = await getDocs(chatsQuery);
-      const existingChatPartners = chatsSnapshot.docs.flatMap(doc => (doc.data() as Chat).members);
-      
-      // 2. Get all users
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const allUsers = usersSnapshot.docs.map(doc => doc.data() as User);
-
-      // 3. Filter out the current user and existing partners
-      const availableUsers = allUsers.filter(u => u.id !== currentUser.id && !existingChatPartners.includes(u.id));
-      
+      const availableUsers = allUsers.filter(u => u.id !== currentUser.id);
       setUsers(availableUsers);
-      setLoading(false);
+setLoading(false);
     };
 
     fetchUsers();
