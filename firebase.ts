@@ -16,6 +16,13 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// Validate Firebase config
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "placeholder") {
+  const message = "Firebase API Key is not configured. Please add it to your .env file or Netlify environment variables.";
+  alert(message);
+  throw new Error(message);
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
