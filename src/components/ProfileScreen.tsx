@@ -2,10 +2,8 @@ import React, { useRef } from 'react';
 import { User } from '@/types';
 import { BackIcon, LogoutIcon, NotificationIcon, PrivacyIcon, HelpIcon, EditIcon } from '@/constants';
 import { auth, db } from '@/firebase';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
-import { UploadButton } from '@/uploadthing';
-import { useEffect, useState } from 'react';
 
 interface ProfileScreenProps {
   user: User;
@@ -15,17 +13,6 @@ interface ProfileScreenProps {
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onBack, onNavigateToNotifications, onNavigateToPrivacy }) => {
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        user.getIdToken().then(setToken);
-      }
-    });
-    return unsubscribe;
-  }, []);
-
   const ProfileOption: React.FC<{icon: React.ReactNode, label: string, onClick?: () => void, className?: string}> = ({ icon, label, onClick, className = '' }) => (
     <button onClick={onClick} className={`flex items-center p-4 w-full text-left hover:bg-gray-50 rounded-lg ${className}`}>
       <div className="mr-4 text-gray-500">{icon}</div>
@@ -49,23 +36,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onBack, onNavigateT
       <main className="flex-grow p-6 flex flex-col items-center">
         <div className="relative mb-6">
           <img src={user.avatar} alt={user.name} className="w-32 h-32 rounded-full shadow-lg border-4 border-white object-cover" />
-          <div className="absolute bottom-1 right-1">
-            <UploadButton
-              endpoint="imageUploader"
-              headers={{
-                Authorization: `Bearer ${token}`,
-              }}
-              onClientUploadComplete={(res) => {
-                if (res) {
-                  const userDocRef = doc(db, 'users', user.id);
-                  updateDoc(userDocRef, { avatar: res[0].url });
-                }
-              }}
-              onUploadError={(error: Error) => {
-                alert(`ERROR! ${error.message}`);
-              }}
-            />
-          </div>
+          <button className="absolute bottom-1 right-1 bg-blue-600 p-2 rounded-full text-white hover:bg-blue-700 transition-transform hover:scale-110 shadow-md">
+            <EditIcon className="w-5 h-5"/>
+          </button>
         </div>
         <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
         <p className="text-gray-500 mt-1">{user.email}</p>

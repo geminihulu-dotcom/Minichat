@@ -3,7 +3,6 @@ import { Message, User, Chat } from '@/types';
 import { BackIcon, MoreVertIcon, AttachmentIcon, EmojiIcon, SendIcon, PhotoIcon } from '@/constants';
 import { db } from '@/firebase';
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
-import { UploadButton } from "@/uploadthing";
 
 interface ChatScreenProps {
   chat: Chat;
@@ -130,17 +129,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chat, user, onBack }) => {
 
       <footer className="p-3 bg-white border-t">
         <div className="flex items-center bg-gray-100 rounded-full px-2 py-1">
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              if(res && res.length > 0) {
-                handleSendMessage("", res[0].url);
-              }
-            }}
-            onUploadError={(error: Error) => {
-              alert(`ERROR! ${error.message}`);
-            }}
-          />
           <input
             type="text"
             placeholder="Type a message..."
